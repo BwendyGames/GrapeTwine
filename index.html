@@ -98,7 +98,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 		<div id="init-lacking"><p>Browser lacks capabilities required to play.</p><p>Upgrade or switch to another browser.</p></div>
 		<div id="init-loading"><div>Loading&hellip;</div></div>
 	</div>
-	<tw-storydata name="GrapeTwine" startnode="7" creator="Twine" creator-version="2.7.1" format="SugarCube" format-version="2.36.1" ifid="608E46C4-D6E0-47B6-8C25-CC5BEC262632" options="" tags="" zoom="1" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">body {
+	<tw-storydata name="GrapeTwine" startnode="6" creator="Twine" creator-version="2.7.1" format="SugarCube" format-version="2.36.1" ifid="608E46C4-D6E0-47B6-8C25-CC5BEC262632" options="" tags="" zoom="1" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">body {
 	text-align: center;
 }
 
@@ -207,63 +207,6 @@ Macro.add('speech', {
 });
 /* speech macro - End */
 
-/* this macro allows the output from chatgtp to be stored in a twine $ variable */
-Macro.add('sendToChatGPT', {
-    handler: function() {
-        if (this.args.length === 0) {
-            return; // No question provided
-        }
-
-        var question = this.args[0];
-        var sUrl = "https://api.openai.com/v1/completions";
-        var sModel = selModel.value;// "text-davinci-003";
-        if (sModel.indexOf("gpt-3.5-turbo") != -1) {
-            //https://openai.com/research/gpt-4
-            sUrl = "https://api.openai.com/v1/chat/completions";
-        }
-        var OPENAI_API_KEY = "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"; // Replace with your API key
-
-        var oHttp = new XMLHttpRequest();
-        oHttp.open("POST", sUrl, true);
-        oHttp.setRequestHeader("Accept", "application/json");
-        oHttp.setRequestHeader("Content-Type", "application/json");
-        oHttp.setRequestHeader("Authorization", "Bearer " + OPENAI_API_KEY);
-
-        oHttp.onreadystatechange = function () {
-            if (oHttp.readyState === XMLHttpRequest.DONE) {
-                var responseText = "";
-                try {
-                    var oJson = JSON.parse(oHttp.responseText);
-                    if (oJson.choices && oJson.choices[0].text) {
-                        responseText = oJson.choices[0].text;
-                    }
-                } catch (ex) {
-                    responseText = "Error: " + ex.message;
-                }
-
-                if (oJson.error && oJson.error.message) {
-                    responseText = "Error: " + oJson.error.message;
-                }
-
-                if (responseText === "") {
-                    responseText = "No response";
-                }
-
-                State.variables.chatGPTResponse = responseText;
-            }
-        };
-
-        var data = {
-            model: sModel,
-            prompt: question,
-            max_tokens: 2048,
-            temperature: 0.5
-        };
-
-        oHttp.send(JSON.stringify(data));
-    }
-});
-
 </script><tw-tag name="Widget" color="red"></tw-tag><tw-passagedata pid="1" name="Chat Example" tags="" position="600,300" size="100,100">&lt;&lt;include &quot;ChatGTP3.5&quot;&gt;&gt;
 &lt;html&gt;
 &lt;body&gt;
@@ -284,7 +227,7 @@ Macro.add('sendToChatGPT', {
 &lt;/html&gt;
 
 &lt;&lt;set $passage to &quot;ChatExample&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="2" name="ChatGTP3.5" tags="Widget" position="200,500" size="100,100">&lt;script&gt;
-var OPENAI_API_KEY = &quot;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&quot;;
+var OPENAI_API_KEY = &quot;&quot;;
 
 function Send() {
 
@@ -399,18 +342,8 @@ function Send() {
 Examples:
 
 [[Chat Example]]
-[[Image Generation]]
-[[Simple Dialouge]]</tw-passagedata><tw-passagedata pid="4" name="StoryInit" tags="" position="200,100" size="100,100">&lt;&lt;set $passage to &quot;&quot;&gt;&gt;
-&lt;&lt;set $chatGPTResponse to &quot;&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="5" name="Image Generation" tags="" position="600,200" size="100,100">&lt;&lt;set $passage to &quot;ImageGeneration&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="6" name="Simple Dialouge" tags="" position="600,100" size="100,100">&lt;&lt;button &quot;Ask ChatGPT&quot;&gt;&gt;
-    &lt;&lt;sendToChatGPT &quot;Howdy?&quot;&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-
-&lt;&lt;if $chatGPTResponse&gt;&gt;
-    &lt;&lt;print $chatGPTResponse&gt;&gt;
-&lt;&lt;/if&gt;&gt;
-
-
-&lt;&lt;set $passage to &quot;SimpleDialouge&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="7" name="Welcome" tags="" position="400,100" size="100,100">&lt;img src=&quot;Img\logo.png&quot; width=&quot;400&quot;&gt;
+[[Image Generation]]</tw-passagedata><tw-passagedata pid="4" name="StoryInit" tags="" position="200,100" size="100,100">&lt;&lt;set $passage to &quot;&quot;&gt;&gt;
+&lt;&lt;set $chatGPTResponse to &quot;&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="5" name="Image Generation" tags="" position="600,200" size="100,100">&lt;&lt;set $passage to &quot;ImageGeneration&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="6" name="Welcome" tags="" position="400,100" size="100,100">&lt;img src=&quot;Img\logo.png&quot; width=&quot;400&quot;&gt;
 
 GrapeTwine is a &lt;a href=&quot;https://en.wikipedia.org/wiki/Free_and_open-source_software&quot;&gt;FOSS&lt;/a&gt; set of tools/widgets for twine sugarcube, that makes it easier to implement AI into your text based game. This project includes all of the widgets, as well as a few examples of how to implement it, which you can navigate from the sidebar to the left.
 
